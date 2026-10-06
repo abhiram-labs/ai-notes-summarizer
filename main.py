@@ -1,4 +1,7 @@
 import os
+import sqlite3
+from datetime import datetime
+
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
@@ -15,6 +18,22 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 app = FastAPI()
+def init_db():
+    connection = sqlite3.connect("summaries.db")
+    cursor = connection.cursor()
+    
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS summaries(
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               text TEXT NOT NULL,
+               summary TEXT NOT NULL,
+               created_at NOT NULL
+            )
+         """)
+    connection.commit()
+    connection.close()
+
+init_db()
 
 @app.get("/app")
 def frontend():
@@ -40,4 +59,38 @@ def summarize(request: SummarizeRequest):
         """,
     )
     
+    summary = response.text
+    connection = sqlite3.connect("summaries.db")
+    cursor = connection.cursor()
+    
+    cursor.execute(
+        "INSERT INTO summaries (text, summary, created_at) VALUES (?, ?, ?)",
+        (request.text, summary, datetime.now().isoformat())
+    )
+    
+    connection.commit()
+    connection.close()
+    
     return {"summary": response.text}
+
+@app.get("/history")
+def history():
+    connection = sqlite3.connect("summaries.db")
+    cursor = connection.cursor()
+    
+    cursor.execute(
+        "SELECT id, text, summary, created_at FROM summaries ORDER BY id DESC"
+    )
+    
+    rows = cursor.fetchall()
+    connection.close()
+    
+    return [
+        {
+            "id": row[0],
+            "text": row[1],
+            "summary": row[2],
+            "created_at": row[3],
+        }
+        for row in rows
+    ]
