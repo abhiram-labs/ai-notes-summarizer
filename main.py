@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from google import genai
 from pydantic import BaseModel
 
@@ -14,6 +15,10 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 app = FastAPI()
+
+@app.get("/app")
+def frontend():
+    return FileResponse("static/index.html")
 
 class SummarizeRequest(BaseModel):
     text: str
