@@ -1,5 +1,17 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
+from google import genai
 from pydantic import BaseModel
+
+load_dotenv()
+
+api_key = os.getenv("GEMINI_API_KEY")
+
+if not api_key:
+    raise RuntimeError("GEMMINI_API_KEY is not set")
+
+client = genai.Client(api_key=api_key)
 
 app = FastAPI()
 
@@ -12,7 +24,15 @@ def home():
 
 @app.post("/summarize")
 def summarize(request: SummarizeRequest):
-    words = request.text.split()
-    summary = " ".join(words[:20])
+    response=client.models.generate_content(
+        model="gemini-3.5-flash-lite",
+        contents=f"""
+        Summarize the following text in a short, clear paragraph.
+        Do not add information that is not in the original text.
+        
+        Text:
+        {request.text}
+        """,
+    )
     
-    return {"summary": summary}
+    return {"summary": response.text}
