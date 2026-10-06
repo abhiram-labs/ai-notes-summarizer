@@ -13,7 +13,7 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    raise RuntimeError("GEMMINI_API_KEY is not set")
+    raise RuntimeError("GEMINI_API_KEY is not set")
 
 client = genai.Client(api_key=api_key)
 
@@ -27,7 +27,7 @@ def init_db():
                id INTEGER PRIMARY KEY AUTOINCREMENT,
                text TEXT NOT NULL,
                summary TEXT NOT NULL,
-               created_at NOT NULL
+               created_at TEXT NOT NULL
             )
          """)
     connection.commit()
@@ -44,7 +44,7 @@ class SummarizeRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "AI Notes Summerizer API"}
+    return {"message": "AI Notes Summarizer API"}
 
 @app.post("/summarize")
 def summarize(request: SummarizeRequest):

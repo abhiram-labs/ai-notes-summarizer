@@ -117,7 +117,7 @@ docker build -t ai-notes-summarizer .
 
 Run the container:
 
-docker run --env-file .env -p 8000:8080 ai-notes-summarizer
+docker run --env-file .env -p 8000:8000 ai-notes-summarizer
 
 Then open:
 
