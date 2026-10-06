@@ -4,6 +4,10 @@ A simple AI-powered web application that I built to practice full-stack developm
 
 The application takes notes from the user and generates a short summary using the Google Gemini API. The generated summaries are also stored in a local SQLite database.
 
+## Demo
+
+![AI Notes Summarizer Demo](app-demo.png)
+
 ## What it does
 
 - Enter or paste notes into the web page
