@@ -60,7 +60,7 @@ The SQLite database is created locally when the application is used and is not i
 
 ### 1. Clone the repository
 
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/abhiram-labs/ai-notes-summarizer.git
 cd ai-notes-summarizer
 
 ### 2. Create a virtual environment
